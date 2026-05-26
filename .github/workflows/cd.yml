@@ -1,0 +1,51 @@
+# .github/workflows/cd.yml
+name: CD - Deploy Simulation
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:   # 允许手动触发
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore & Build
+        run: |
+          dotnet restore MyApp/MyApp.csproj
+          dotnet build MyApp/MyApp.csproj --no-restore
+
+      - name: Run tests
+        run: dotnet test MyApp.Tests/MyApp.Tests.csproj --no-build
+
+  deploy-simulate:
+    needs: build-and-test   # 只有构建测试成功才执行部署
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulate deployment (no real SSH)
+        run: |
+          echo "===== CD Pipeline Starting ====="
+          echo "Step 1: Build passed. Now deploying to target server..."
+          echo "Step 2: Connecting to ${{ secrets.DEPLOY_HOST }} via SSH (will fail if no public IP)"
+          echo "Step 3: (Simulated) Copying artifacts"
+          echo "Step 4: (Simulated) Restarting service"
+          echo "===== Deployment finished (simulated) ====="
+
+      # 如果你仍然想尝试真实的 SSH 连接（即使会失败），可以取消下面注释
+      # - name: Real SSH attempt (expected to fail)
+      #   uses: appleboy/ssh-action@v1.0.0
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     port: ${{ secrets.DEPLOY_PORT }}
+      #     script: echo "Hello from GitHub Actions"
+      #   continue-on-error: true   # 即使失败也继续，不会让 workflow 标红
