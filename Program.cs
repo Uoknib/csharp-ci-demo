@@ -4,7 +4,7 @@ namespace MyApp
 {
     class Program
     {
-        static int Add(int a, int b) => a + b;
+        public static int Add(int a, int b) => a + b;
 
         static void Main(string[] args)
         {
