@@ -2,7 +2,7 @@ using System;
 
 namespace MyApp
 {
-    class Program
+    public class Program
     {
         public static int Add(int a, int b) => a + b;
 
