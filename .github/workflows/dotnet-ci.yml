@@ -20,11 +20,17 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Restore main project
+        run: dotnet restore MyApp/MyApp.csproj
 
-      - name: Build all projects
-        run: dotnet build --no-restore
+      - name: Build main project
+        run: dotnet build MyApp/MyApp.csproj --no-restore
+
+      - name: Restore test project
+        run: dotnet restore MyApp.Tests/MyApp.Tests.csproj
+
+      - name: Build test project
+        run: dotnet build MyApp.Tests/MyApp.Tests.csproj --no-restore
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test MyApp.Tests/MyApp.Tests.csproj --no-build --verbosity normal
